@@ -1,4 +1,5 @@
 import Model.Database.UserDAO;
+import Model.DedicatedServer;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -6,16 +7,9 @@ import java.sql.SQLException;
 
 public class Main {
 
-    public static void main(String[] args) throws Exception {
-        UserDAO dao = new UserDAO();
+    public static void main(String[] args){
 
-
-        ResultSet test = dao.findAll();
-
-        ResultSetMetaData rsmd = test.getMetaData();
-
-        System.out.println("Hay " +rsmd.getColumnCount() + " columnas en la db." );
-
+        DedicatedServer server = new DedicatedServer();
 
     }
 }

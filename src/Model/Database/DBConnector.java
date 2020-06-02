@@ -24,28 +24,14 @@ public class DBConnector {
     private static DBConnector instance;
 
     public DBConnector(){
-
-        final String config_path = "./config.json";
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(config_path));
-            JsonElement jelement = new JsonParser().parse(br);
-            JsonObject jobject = jelement.getAsJsonObject();
-
-            this.ip = jobject.get("ip").getAsString();
-            this.db_name = jobject.get("db_name").getAsString();
-            this.username = jobject.get("username").getAsString();
-            this.password = jobject.get("password").getAsString();
-            this.port = jobject.get("port").getAsInt();
-
-        } catch (IOException e){
-            e.printStackTrace();
-        }
+        //agafa el contingut de config.json amb les dades de la db
+        setConfig();
 
         this.url = "jdbc:mysql://" + ip + ":" + port + "/" + db_name + "?allowPublicKeyRetrieval=true&useSSL=false";
 
         try {
-            this.connection = (Connection) DriverManager.getConnection(url, username, password);
+            //es conecta a la db
+            this.connection = DriverManager.getConnection(url, username, password);
             if (connection != null) {
                 System.out.println("Connexió exitosa a base de dades "+ db_name );
             }
@@ -66,5 +52,25 @@ public class DBConnector {
 
     public Connection getConnection(){
         return this.connection;
+    }
+
+    private void setConfig(){
+        //extreu les dades de config.json
+        final String config_path = "./config.json";
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(config_path));
+            JsonElement jelement = new JsonParser().parse(br);
+            JsonObject jobject = jelement.getAsJsonObject();
+
+            this.ip = jobject.get("ip").getAsString();
+            this.db_name = jobject.get("db_name").getAsString();
+            this.username = jobject.get("username").getAsString();
+            this.password = jobject.get("password").getAsString();
+            this.port = jobject.get("port").getAsInt();
+
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
 }
