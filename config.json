@@ -1,0 +1,9 @@
+{
+    "ip":"localhost",
+    "db_name":"lasallemusic",
+    "username":"root",
+    "password":"root",
+    "port": "3306",
+    "client_port": "65000"
+}
+
