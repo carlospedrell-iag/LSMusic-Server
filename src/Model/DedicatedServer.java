@@ -1,5 +1,6 @@
 package Model;
 
+import Model.Database.UserDAO;
 import Model.Entity.ObjectMessage;
 import Model.Entity.User;
 import com.google.gson.JsonElement;
@@ -9,6 +10,8 @@ import com.google.gson.JsonParser;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class DedicatedServer extends Thread {
@@ -42,7 +45,7 @@ public class DedicatedServer extends Thread {
 
                 ObjectOutputStream oos = new ObjectOutputStream(client_socket.getOutputStream());
                 //segons el tipus d'operacio que ens diu el Object Message, s'executa un metode diferent
-                switch (input_obj.getType()){
+                switch (input_obj.getMessage()){
                     case "register":
                         ArrayList<String> errors = registerUser((User)input_obj.getObject());
                         input_obj.setErrors(errors);
@@ -60,8 +63,33 @@ public class DedicatedServer extends Thread {
         }
     }
 
-    private ArrayList<String> registerUser(User user){
-        ArrayList<String> errors = new ArrayList<String>();
+    public ArrayList<String> registerUser(User user){
+        UserDAO userDAO = new UserDAO();
+        ArrayList<String> errors = new ArrayList<>();
+
+        ArrayList<User> users = userDAO.findAll();
+
+        for(User u: users){
+            //en cas d'existir el nom d'usuari
+            if(u.getName().equals(user.getName())){
+                errors.add("Error, aquest nom d'usuari ja esta agafat");
+                return errors;
+            }
+
+            //en cas d'existir el email
+            if(u.getEmail().equals(user.getEmail())){
+                errors.add("Error, aquest email ja esta agafat");
+                return errors;
+            }
+        }
+
+
+
+        //si no hi ha hagut cap error, s'emmagatzema l'usuari a la db
+        if(errors.size() == 0){
+            userDAO.create(user);
+        }
+
 
         return errors;
     }

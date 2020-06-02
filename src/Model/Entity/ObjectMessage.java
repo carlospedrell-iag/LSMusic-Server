@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 public class ObjectMessage {
     private Object object;
-    private String type;
+    private String message;
     private ArrayList<String> errors;
 
     public ObjectMessage(Object object, String type){
         this.object = object;
-        this.type = type;
+        this.message = type;
         this.errors = new ArrayList<>();
     }
 
@@ -17,8 +17,8 @@ public class ObjectMessage {
         return object;
     }
 
-    public String getType() {
-        return type;
+    public String getMessage() {
+        return message;
     }
 
     public ArrayList<String> getErrors(){

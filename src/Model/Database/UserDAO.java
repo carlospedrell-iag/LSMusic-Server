@@ -1,21 +1,70 @@
 package Model.Database;
 
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import Model.Entity.User;
-import java.sql.Connection;
+
+import java.time.LocalDateTime;
 
 public class UserDAO {
+    private Connection connection;
 
-    public ResultSet findAll() throws Exception{
+    public UserDAO(){}{
+        this.connection = DBConnector.getInstance().getConnection();
+    }
+
+    public ArrayList<User> findAll(){
+        ArrayList<User> users = new ArrayList<>();
         PreparedStatement statement;
-        Connection connection = DBConnector.getInstance().getConnection();
 
-        statement = connection.prepareStatement("SELECT * FROM User;");
-        ResultSet rs = statement.executeQuery();
+        try{
+            statement = connection.prepareStatement("SELECT * FROM User;");
+            ResultSet rs = statement.executeQuery();
 
-        return rs;
+            while(rs.next()){
+                Timestamp last_access_ts = rs.getTimestamp("last_access");
+                LocalDateTime last_access = null;
+                if(last_access_ts != null){
+                    last_access = last_access_ts.toLocalDateTime();
+                }
+
+                User user = new User(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getTimestamp("created_at").toLocalDateTime(),
+                        last_access
+                );
+                users.add(user);
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return users;
+    }
+
+    public void create(User user){
+        PreparedStatement statement;
+
+        try{
+            statement = connection.prepareStatement("INSERT INTO User VALUES(default,?,?,?,?,default)");
+
+            Timestamp created_at = Timestamp.valueOf(user.getCreated_at());
+
+            statement.setString(1,user.getName());
+            statement.setString(2,user.getEmail());
+            statement.setString(3,user.getPassword());
+            statement.setTimestamp(4,created_at);
+
+            statement.executeUpdate();
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        System.out.println("Usuari afegit a la db.");
     }
 }

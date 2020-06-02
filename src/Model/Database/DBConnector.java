@@ -32,9 +32,6 @@ public class DBConnector {
         try {
             //es conecta a la db
             this.connection = DriverManager.getConnection(url, username, password);
-            if (connection != null) {
-                System.out.println("Connexió exitosa a base de dades "+ db_name );
-            }
         }
         catch(SQLException ex) {
             ex.printStackTrace();
