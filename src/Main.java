@@ -1,13 +1,9 @@
-import Model.Database.UserDAO;
+import Controller.UserController;
 import Model.DedicatedServer;
-import Model.Entity.User;
+import View.MainWindow;
+
 
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 public class Main {
 
@@ -20,6 +16,10 @@ public class Main {
             e.printStackTrace();
         }
 
+        MainWindow mainWindow = new MainWindow();
+
+        UserController userController = new UserController(mainWindow);
+        mainWindow.getUserPanel().setUpController(userController);
 
     }
 }

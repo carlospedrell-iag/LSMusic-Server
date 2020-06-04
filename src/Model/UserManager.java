@@ -1,61 +1,108 @@
 package Model;
 
 import Model.Database.UserDAO;
+import Model.Entity.ObjectMessage;
 import Model.Entity.User;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class UserManager {
 
-    public static ArrayList<String> registerUser(User user){
+    public static ObjectMessage registerUser(ObjectMessage om){
+        System.out.println("Objecte rebut.");
         UserDAO userDAO = new UserDAO();
-        ArrayList<String> errors = new ArrayList<>();
+        User user = (User)om.getObject();
 
         ArrayList<User> users = userDAO.findAll();
 
         if(user.getEmail().isBlank() || user.getName().isBlank() || user.getPassword().isBlank() || user.getForm_password().isBlank()){
-            errors.add("No es poden deixar camps en blanc.");
+            om.addError("No es poden deixar camps en blanc.");
         } else {
 
             if(!isEmailValid(user.getEmail())){
-                errors.add("Email invalid.");
+                om.addError("Email invalid.");
             }
 
             if(!isPasswordValid(user.getPassword())){
-                errors.add("Contrasenya invalida.");
+                om.addError("Contrasenya invalida.");
             }
 
             if(!user.getPassword().equals(user.getForm_password())){
-                errors.add("Les contrasenyes no son iguals.");
+                om.addError("Les contrasenyes no coincideixen.");
             }
 
             for(User u: users){
                 //en cas d'existir el nom d'usuari
                 if(u.getName().equals(user.getName())){
-                    errors.add("Aquest nom d'usuari ja esta agafat.");
+                    om.addError("Aquest nom d'usuari ja esta agafat.");
                 }
 
                 //en cas d'existir el email
                 if(u.getEmail().equals(user.getEmail())){
-                    errors.add("Aquest email ja esta agafat.");
+                    om.addError("Aquest email ja esta agafat.");
                 }
             }
         }
 
         //si no hi ha hagut cap error, s'emmagatzema l'usuari a la db
-        if(errors.size() == 0){
+        if(om.getErrors().size() == 0){
             userDAO.create(user);
         }
 
-        return errors;
+        om.printErrors();
+
+        return om;
+    }
+
+    public static ObjectMessage loginUser(ObjectMessage om){
+        System.out.println("Objecte rebut.");
+
+        UserDAO userDAO = new UserDAO();
+        User user = (User)om.getObject();
+        Boolean authenticated = false;
+        ArrayList<User> users = userDAO.findAll();
+
+        if(user.getName().isBlank() || user.getPassword().isBlank()){
+            om.addError("No es poden deixar camps en blanc.");
+        } else {
+            for(User u: users){
+                //si troba l'usuari per nom (+ password igual)
+                if(u.getName().equals(user.getName()) && u.getPassword().equals(user.getPassword())){
+                    authenticated = true;
+                    //logejem l'user actualitzant el last access
+                    u.setLast_access(LocalDateTime.now());
+                    userDAO.update(u);
+
+                } else {
+                    //si troba l'usuari per email (+ password igual)
+                    if(u.getEmail().equals(user.getName()) && u.getPassword().equals(user.getPassword())){
+                        authenticated = true;
+                        //logejem l'user actualitzant el last access
+                        u.setLast_access(LocalDateTime.now());
+                        userDAO.update(u);
+                    }
+                }
+            }
+
+            if(!authenticated){
+                om.addError("Les credencials introduïdes són incorrectes.");
+            }
+        }
+
+        om.printErrors();
+
+        return om;
     }
 
     private static boolean isEmailValid(String email) {
+        //expressió regular que ens diu si el mail es valid
         String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
         return email.matches(regex);
     }
 
     private static boolean isPasswordValid(String password){
+        //expressió regular que ens diu si el pass te numeros, minuscules, majuscules i es de 6 o més caracters
         String regex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{6,}$";
         return password.matches(regex);
     }

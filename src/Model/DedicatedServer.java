@@ -49,14 +49,14 @@ public class DedicatedServer extends Thread {
                 //segons el tipus d'operacio que ens diu el Object Message, s'executa un metode diferent
                 switch (input_om.getMessage()){
                     case "register":
-                        System.out.println("Objecte rebut.");
-                        ArrayList<String> errors = UserManager.registerUser((User)input_om.getObject());
-                        input_om.setErrors(errors);
-                        input_om.printErrors();
+                        input_om = UserManager.registerUser(input_om);
+                        oos.writeObject(input_om);
+                        break;
+                    case "login":
+                        input_om = UserManager.loginUser(input_om);
                         oos.writeObject(input_om);
                         break;
                 }
-
             }
             catch (IOException | ClassNotFoundException e){
                 e.printStackTrace();

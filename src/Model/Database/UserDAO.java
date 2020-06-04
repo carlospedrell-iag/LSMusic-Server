@@ -50,7 +50,7 @@ public class UserDAO {
         PreparedStatement statement;
 
         try{
-            statement = connection.prepareStatement("INSERT INTO User VALUES(default,?,?,?,?,default)");
+            statement = connection.prepareStatement("INSERT INTO User VALUES(default,?,?,?,?,?)");
 
             Timestamp created_at = Timestamp.valueOf(user.getCreated_at());
 
@@ -58,6 +58,7 @@ public class UserDAO {
             statement.setString(2,user.getEmail());
             statement.setString(3,user.getPassword());
             statement.setTimestamp(4,created_at);
+            statement.setTimestamp(5,created_at);
 
             statement.executeUpdate();
 
@@ -65,6 +66,54 @@ public class UserDAO {
             e.printStackTrace();
         }
 
-        System.out.println("Usuari afegit a la db.");
+        System.out.println("Usuari " + user.getName() + " afegit a la db.");
+    }
+
+    public void update(User user){
+        PreparedStatement statement;
+
+        try{
+            statement = connection.prepareStatement("UPDATE User SET " +
+                    "name = ?," +
+                    "email = ?," +
+                    "password = ?," +
+                    "created_at = ?," +
+                    "last_access = ? " +
+                    "WHERE id = ?;");
+
+            Timestamp created_at = Timestamp.valueOf(user.getCreated_at());
+            Timestamp last_access = Timestamp.valueOf(user.getLast_access());
+
+            statement.setString(1,user.getName());
+            statement.setString(2,user.getEmail());
+            statement.setString(3,user.getPassword());
+            statement.setTimestamp(4,created_at);
+            statement.setTimestamp(5,last_access);
+            statement.setInt(6,user.getId());
+
+            statement.executeUpdate();
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        System.out.println("Usuari " + user.getName() + " actualitzat a la db.");
+    }
+
+    public void deleteByName(String name){
+        PreparedStatement statement;
+
+        try{
+            statement = connection.prepareStatement("DELETE FROM User WHERE name = ?");
+
+            statement.setString(1,name);
+
+            statement.executeUpdate();
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        System.out.println("Usuari " + name + " eliminat de la db.");
     }
 }
