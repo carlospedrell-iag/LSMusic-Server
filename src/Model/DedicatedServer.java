@@ -41,57 +41,27 @@ public class DedicatedServer extends Thread {
                 Socket client_socket = server_socket.accept();
                 //rebem l'objecte del client
                 ObjectInputStream ois = new ObjectInputStream(client_socket.getInputStream());
-                ObjectMessage input_obj = (ObjectMessage)ois.readObject();
+                Object input_obj = ois.readObject();
+
+                ObjectMessage input_om = (ObjectMessage)input_obj;
 
                 ObjectOutputStream oos = new ObjectOutputStream(client_socket.getOutputStream());
                 //segons el tipus d'operacio que ens diu el Object Message, s'executa un metode diferent
-                switch (input_obj.getMessage()){
+                switch (input_om.getMessage()){
                     case "register":
-                        ArrayList<String> errors = registerUser((User)input_obj.getObject());
-                        input_obj.setErrors(errors);
-                        oos.writeObject(input_obj);
+                        System.out.println("Objecte rebut.");
+                        ArrayList<String> errors = UserManager.registerUser((User)input_om.getObject());
+                        input_om.setErrors(errors);
+                        input_om.printErrors();
+                        oos.writeObject(input_om);
                         break;
                 }
 
             }
-            catch (IOException e){
-                e.printStackTrace();
-            }
-            catch (ClassNotFoundException e){
+            catch (IOException | ClassNotFoundException e){
                 e.printStackTrace();
             }
         }
-    }
-
-    public ArrayList<String> registerUser(User user){
-        UserDAO userDAO = new UserDAO();
-        ArrayList<String> errors = new ArrayList<>();
-
-        ArrayList<User> users = userDAO.findAll();
-
-        for(User u: users){
-            //en cas d'existir el nom d'usuari
-            if(u.getName().equals(user.getName())){
-                errors.add("Error, aquest nom d'usuari ja esta agafat");
-                return errors;
-            }
-
-            //en cas d'existir el email
-            if(u.getEmail().equals(user.getEmail())){
-                errors.add("Error, aquest email ja esta agafat");
-                return errors;
-            }
-        }
-
-
-
-        //si no hi ha hagut cap error, s'emmagatzema l'usuari a la db
-        if(errors.size() == 0){
-            userDAO.create(user);
-        }
-
-
-        return errors;
     }
 
     private void setConfig(){

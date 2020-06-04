@@ -35,7 +35,7 @@ public class DBConnector {
         }
         catch(SQLException ex) {
             ex.printStackTrace();
-            System.out.println("Error al connectar a la base de dades "+url);
+            System.out.println("Error al connectar a la base de dades " + db_name);
         }
 
     }

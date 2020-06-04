@@ -21,15 +21,5 @@ public class Main {
         }
 
 
-        UserDAO userDAO = new UserDAO();
-        User user = new User("cha2rlies", "cpm11s8@gmail.com", "hola111");
-
-        ArrayList<String> errors = server.registerUser(user);
-
-        for(String error: errors){
-            System.out.println(error);
-        }
-
-
     }
 }
