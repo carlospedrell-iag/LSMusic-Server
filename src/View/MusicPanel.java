@@ -16,6 +16,8 @@ public class MusicPanel {
 
     private String[] columnNames = {"Title", "Artist", "Album", "Genre", "File Path"};
 
+    DefaultTableModel model;
+
     public MusicPanel(){
         music_table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         music_table.getTableHeader().setReorderingAllowed(false);
@@ -31,7 +33,7 @@ public class MusicPanel {
 
     public void refreshTable(ArrayList<Track> tracks){
         //fem un petit i rapid override de la funcio isCellEditable de DefaultTableModel per desactivar l'edicio de camps
-        DefaultTableModel model = new DefaultTableModel(){
+        model = new DefaultTableModel(){
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;

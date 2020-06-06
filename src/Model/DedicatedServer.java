@@ -1,7 +1,12 @@
 package Model;
 
+import Model.Database.DBConnector;
+import Model.Database.PlaylistDAO;
+import Model.Database.TrackDAO;
 import Model.Database.UserDAO;
 import Model.Entity.ObjectMessage;
+import Model.Entity.Playlist;
+import Model.Entity.Track;
 import Model.Entity.User;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -56,6 +61,19 @@ public class DedicatedServer extends Thread {
                         input_om = UserManager.loginUser(input_om);
                         oos.writeObject(input_om);
                         break;
+                    case "request_tracklist":
+                        TrackDAO trackDAO = new TrackDAO();
+                        input_om.setObject(trackDAO.findAll());
+                        oos.writeObject(input_om);
+                        break;
+                    case "request_playlists":
+                        User user = (User)input_om.getObject();
+                        PlaylistDAO playlistDAO = new PlaylistDAO();
+
+                        ArrayList<Playlist> playlists = playlistDAO.findAllByUserId(user.getId());
+
+                        input_om.setObject(playlists);
+                        oos.writeObject(input_om);
                 }
             }
             catch (IOException | ClassNotFoundException e){

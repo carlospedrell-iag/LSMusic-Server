@@ -67,21 +67,14 @@ public class UserManager {
             om.addError("No es poden deixar camps en blanc.");
         } else {
             for(User u: users){
-                //si troba l'usuari per nom (+ password igual)
-                if(u.getName().equals(user.getName()) && u.getPassword().equals(user.getPassword())){
+                //si troba l'usuari per nom o per email(+ password igual)
+                if(authenticateByName(u,user) || authenticateByEmail(u,user)){
                     authenticated = true;
                     //logejem l'user actualitzant el last access
                     u.setLast_access(LocalDateTime.now());
                     userDAO.update(u);
-
-                } else {
-                    //si troba l'usuari per email (+ password igual)
-                    if(u.getEmail().equals(user.getName()) && u.getPassword().equals(user.getPassword())){
-                        authenticated = true;
-                        //logejem l'user actualitzant el last access
-                        u.setLast_access(LocalDateTime.now());
-                        userDAO.update(u);
-                    }
+                    //posem dins del object message l'usuari validat de la db que conté tota la info
+                    om.setObject(u);
                 }
             }
 
@@ -105,5 +98,13 @@ public class UserManager {
         //expressió regular que ens diu si el pass te numeros, minuscules, majuscules i es de 6 o més caracters
         String regex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{6,}$";
         return password.matches(regex);
+    }
+
+    private static boolean authenticateByName(User u, User user){
+        return u.getName().equals(user.getName()) && u.getPassword().equals(user.getPassword());
+    }
+
+    private static boolean authenticateByEmail(User u, User user){
+        return u.getEmail().equals(user.getName()) && u.getPassword().equals(user.getPassword());
     }
 }

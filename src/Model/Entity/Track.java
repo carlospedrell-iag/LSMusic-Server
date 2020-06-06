@@ -1,6 +1,8 @@
 package Model.Entity;
 
-public class Track {
+import java.io.Serializable;
+
+public class Track implements Serializable {
 
     private int id;
     private String title;

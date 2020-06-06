@@ -57,4 +57,8 @@ public class ObjectMessage implements Serializable {
     public void addError(String error){
         this.errors.add(error);
     }
+
+    public void setObject(Object object) {
+        this.object = object;
+    }
 }
