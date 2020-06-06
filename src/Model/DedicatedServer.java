@@ -64,6 +64,8 @@ public class DedicatedServer extends Thread {
         }
     }
 
+
+
     private void setConfig(){
 
         final String config_path = "./config.json";

@@ -1,6 +1,5 @@
 package Model.Database;
 
-
 import java.sql.*;
 import java.util.ArrayList;
 import Model.Entity.User;

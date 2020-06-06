@@ -19,6 +19,7 @@ public class UserController implements ActionListener {
         this.userPanel = mainWindow.getUserPanel();
 
         updateTable();
+
     }
 
     @Override
@@ -35,11 +36,16 @@ public class UserController implements ActionListener {
     }
 
     private void updateTable(){
-        //recull info d'user de la DB i la envia a la vista per refrescar la taula
-        System.out.println("Taula users actualitzada");
-        UserDAO userDAO = new UserDAO();
-        userPanel.refreshTable(userDAO.findAll());
-        mainWindow.revalidate();
+        try{
+            //recull info d'user de la DB i la envia a la vista per refrescar la taula
+            UserDAO userDAO = new UserDAO();
+            userPanel.refreshTable(userDAO.findAll());
+            mainWindow.revalidate();
+            System.out.println("Taula users actualitzada");
+        } catch (Exception e){
+            mainWindow.showError("Error al connectar a la base de dades");
+            mainWindow.revalidate();
+        }
     }
 
     private void removeSelectedUser(){
@@ -65,8 +71,5 @@ public class UserController implements ActionListener {
         } else {
             mainWindow.showError("No s'ha seleccionat cap usuari.");
         }
-
     }
-
-
 }

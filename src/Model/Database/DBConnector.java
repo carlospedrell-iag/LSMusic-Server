@@ -34,7 +34,6 @@ public class DBConnector {
             this.connection = DriverManager.getConnection(url, username, password);
         }
         catch(SQLException ex) {
-            ex.printStackTrace();
             System.out.println("Error al connectar a la base de dades " + db_name);
         }
 

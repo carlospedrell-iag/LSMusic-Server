@@ -12,6 +12,8 @@ public class UserPanel{
     private JPanel main_panel;
     private JButton refresh_button;
     private JTable user_table;
+    private JPanel container;
+    private JToolBar toolbar;
 
     private JMenuItem deleteUser;
 
