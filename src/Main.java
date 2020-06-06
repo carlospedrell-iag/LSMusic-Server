@@ -14,7 +14,6 @@ public class Main {
 
     public static void main(String[] args){
 
-
         DedicatedServer server = new DedicatedServer();
 
         try{

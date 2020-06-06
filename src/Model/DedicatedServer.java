@@ -69,9 +69,7 @@ public class DedicatedServer extends Thread {
                     case "request_playlists":
                         User user = (User)input_om.getObject();
                         PlaylistDAO playlistDAO = new PlaylistDAO();
-
                         ArrayList<Playlist> playlists = playlistDAO.findAllByUserId(user.getId());
-
                         input_om.setObject(playlists);
                         oos.writeObject(input_om);
                 }
