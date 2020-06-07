@@ -61,17 +61,17 @@ public class TrackDAO {
         System.out.println("Track " + track.getTitle() + " afegit a la db.");
     }
 
-    public void deleteByTitle(String title){
+    public void deleteById(int id){
         PreparedStatement statement;
 
         try{
-            statement = connection.prepareStatement("DELETE FROM Track WHERE title = ?");
-            statement.setString(1,title);
+            statement = connection.prepareStatement("DELETE FROM Track WHERE id = ?");
+            statement.setInt(1,id);
             statement.executeUpdate();
 
         } catch (SQLException e){
             e.printStackTrace();
         }
-        System.out.println("Track " + title + " eliminat de la db.");
+        System.out.println("Track id:" + id + " eliminat de la db.");
     }
 }

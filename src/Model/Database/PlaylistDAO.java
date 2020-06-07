@@ -77,4 +77,22 @@ public class PlaylistDAO {
 
         return tracks;
     }
+
+    public void create(Playlist playlist){
+        PreparedStatement statement;
+
+        try{
+            statement = connection.prepareStatement("INSERT INTO Playlist VALUES(default,?,?)");
+
+            statement.setString(1,playlist.getName());
+            statement.setInt(2,playlist.getId_user());
+
+            statement.executeUpdate();
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        System.out.println("Playlist " + playlist.getName() + " afegida a la db.");
+    }
 }

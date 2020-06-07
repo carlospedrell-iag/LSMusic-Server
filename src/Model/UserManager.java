@@ -48,6 +48,8 @@ public class UserManager {
         //si no hi ha hagut cap error, s'emmagatzema l'usuari a la db
         if(om.getErrors().size() == 0){
             userDAO.create(user);
+            //demanem l'usuari complet de la db amb la seva id per tornar al client
+            om.setObject(userDAO.findByName(user.getName()));
         }
 
         om.printErrors();

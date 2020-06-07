@@ -12,11 +12,14 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 
 public class MusicController implements ActionListener {
 
     private MainWindow mainWindow;
     private MusicPanel musicPanel;
+
+    private ArrayList<Track> tracklist;
 
     private String file_path = "";
     private final String[] SUPPORTED_FORMATS = {"wav","aiff","au"};
@@ -88,7 +91,7 @@ public class MusicController implements ActionListener {
             if(dialogResult == JOptionPane.YES_OPTION){
                 //eliminem track de la db per nom i actualitzem la taula
                 TrackDAO trackDAO = new TrackDAO();
-                trackDAO.deleteByTitle(track_title);
+                trackDAO.deleteById(tracklist.get(selected_row).getId());
                 updateTable();
 
                 mainWindow.showMessage("Track " + track_title + " eliminat de la base de dades");
@@ -116,8 +119,9 @@ public class MusicController implements ActionListener {
         try{
             //recull info d'user de la DB i la envia a la vista per refrescar la taula
             TrackDAO trackDAO = new TrackDAO();
+            this.tracklist = trackDAO.findAll();
 
-            musicPanel.refreshTable(trackDAO.findAll());
+            musicPanel.refreshTable(tracklist);
             mainWindow.revalidate();
             System.out.println("Taula musica actualitzada");
         } catch (Exception e){

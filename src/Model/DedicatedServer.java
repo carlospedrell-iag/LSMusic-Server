@@ -62,16 +62,21 @@ public class DedicatedServer extends Thread {
                         oos.writeObject(input_om);
                         break;
                     case "request_tracklist":
-                        TrackDAO trackDAO = new TrackDAO();
-                        input_om.setObject(trackDAO.findAll());
+                        input_om = MusicManager.requestTracklist(input_om);
                         oos.writeObject(input_om);
                         break;
                     case "request_playlists":
-                        User user = (User)input_om.getObject();
-                        PlaylistDAO playlistDAO = new PlaylistDAO();
-                        ArrayList<Playlist> playlists = playlistDAO.findAllByUserId(user.getId());
-                        input_om.setObject(playlists);
+                        input_om = MusicManager.requestPlaylists(input_om);
                         oos.writeObject(input_om);
+                        break;
+                    case "new_playlist":
+                        input_om = MusicManager.newPlaylist(input_om);
+                        oos.writeObject(input_om);
+                        break;
+                    case "add_playlist_track":
+                        input_om = MusicManager.addPlaylistTrack(input_om);
+                        oos.writeObject(input_om);
+                        break;
                 }
             }
             catch (IOException | ClassNotFoundException e){
