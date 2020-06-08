@@ -33,9 +33,25 @@ public class MusicManager {
         return om;
     }
 
+    public static ObjectMessage deletePlaylist(ObjectMessage om){
+        PlaylistDAO playlistDAO = new PlaylistDAO();
+        Playlist playlist = (Playlist)om.getObject();
+        playlistDAO.deleteById(playlist.getId());
+
+        return om;
+    }
+
     public static ObjectMessage addPlaylistTrack(ObjectMessage om){
         PlaylistTrackDAO playlistTrackDAO = new PlaylistTrackDAO();
         playlistTrackDAO.create((PlaylistTrack)om.getObject());
+
+        return om;
+    }
+
+    public static ObjectMessage deletePlaylistTrack(ObjectMessage om){
+        PlaylistTrackDAO playlistTrackDAO = new PlaylistTrackDAO();
+        PlaylistTrack playlistTrack = (PlaylistTrack)om.getObject();
+        playlistTrackDAO.deleteById(playlistTrack.getId());
 
         return om;
     }

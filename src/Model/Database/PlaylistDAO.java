@@ -69,6 +69,8 @@ public class PlaylistDAO {
                         rs.getFloat("rating")
                 );
 
+                track.setPlaylist_track_id(rs.getInt("id_playlist_track"));
+
                 tracks.add(track);
             }
         } catch (SQLException e){
@@ -83,7 +85,6 @@ public class PlaylistDAO {
 
         try{
             statement = connection.prepareStatement("INSERT INTO Playlist VALUES(default,?,?)");
-
             statement.setString(1,playlist.getName());
             statement.setInt(2,playlist.getId_user());
 
@@ -94,5 +95,20 @@ public class PlaylistDAO {
         }
 
         System.out.println("Playlist " + playlist.getName() + " afegida a la db.");
+    }
+
+    public void deleteById(int id){
+        PreparedStatement statement;
+
+        try{
+            statement = connection.prepareStatement("DELETE FROM Playlist WHERE id = ?");
+            statement.setInt(1,id);
+            statement.executeUpdate();
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        System.out.println("Playlist id: " + id + " eliminada de la db.");
     }
 }

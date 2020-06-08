@@ -20,10 +20,11 @@ public class PlaylistTrackDAO {
         PreparedStatement statement;
 
         try{
-            statement = connection.prepareStatement("INSERT INTO Playlist_Track VALUES(default,?,?,default)");
+            statement = connection.prepareStatement("INSERT INTO Playlist_Track VALUES(default,?,?,?)");
 
             statement.setInt(1,playlistTrack.getPlaylist_id());
             statement.setInt(2,playlistTrack.getTrack_id());
+            statement.setFloat(3,playlistTrack.getRating());
 
             statement.executeUpdate();
 
@@ -53,6 +54,21 @@ public class PlaylistTrackDAO {
         } catch (SQLException e){
             e.printStackTrace();
         }
+    }
+
+    public void deleteById(int id){
+        PreparedStatement statement;
+
+        try{
+            statement = connection.prepareStatement("DELETE FROM Playlist_Track WHERE id_playlist_track = ?");
+            statement.setInt(1,id);
+
+            statement.executeUpdate();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        System.out.println("Playlist Track id: " + id + " eliminat de la db.");
     }
 
     public void updateRating(int track_id){
