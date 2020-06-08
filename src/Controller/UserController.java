@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.Database.UserDAO;
+import Model.UserManager;
 import View.MainWindow;
 import View.UserPanel;
 
@@ -61,8 +62,8 @@ public class UserController implements ActionListener {
 
             if(dialogResult == JOptionPane.YES_OPTION){
                 //eliminem user de la db per nom i actualitzem la taula
-                UserDAO userDAO = new UserDAO();
-                userDAO.deleteByName(user_name);
+                UserManager.deleteUser(user_name);
+
                 updateTable();
 
                 mainWindow.showMessage("Usuari " + user_name + " eliminat de la base de dades");

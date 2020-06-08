@@ -32,7 +32,7 @@ public class PlaylistTrackDAO {
             e.printStackTrace();
         }
 
-        System.out.println("Playlist Track id:" + playlistTrack.getTrack_id() + " afegit a la db.");
+        System.out.println("Playlist Track id: " + playlistTrack.getTrack_id() + " afegit a la db.");
     }
 
     public void update(PlaylistTrack playlistTrack){
@@ -75,6 +75,7 @@ public class PlaylistTrackDAO {
         PreparedStatement statement;
 
         try{
+
             statement = connection.prepareStatement("SELECT AVG(x.rating)\n" +
                     "FROM (\n" +
                     "     SELECT PT.rating FROM Playlist_Track AS PT\n" +
@@ -88,10 +89,12 @@ public class PlaylistTrackDAO {
             ResultSet rs = statement.executeQuery();
             rs.next();
             float avg_rating = rs.getFloat("AVG(x.rating)");
-            System.out.println("AVERAGE RATING: " + avg_rating + " ID: " + track_id);
 
             PreparedStatement statement1;
-
+            //si no hi ha cap rating, el avg_rating es -1 (nul)
+            if(!isRated(track_id)){
+                avg_rating = -1;
+            }
             statement1 = connection.prepareStatement("UPDATE Track SET rating = ? WHERE id = ?;");
 
             statement1.setFloat(1,avg_rating);
@@ -99,9 +102,28 @@ public class PlaylistTrackDAO {
 
             statement1.executeUpdate();
 
+
         } catch (SQLException e){
             e.printStackTrace();
         }
+    }
+
+    private Boolean isRated(int track_id){
+        PreparedStatement statement;
+        Boolean isRated = false;
+
+        try{
+            statement = connection.prepareStatement("SELECT rating FROM Playlist_Track WHERE id_track = ? AND rating <> -1;");
+            statement.setInt(1,track_id);
+            ResultSet rs = statement.executeQuery();
+
+            if(rs.next()){
+                isRated = true;
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return isRated;
     }
 
     public int findUserId(int playlist_id){

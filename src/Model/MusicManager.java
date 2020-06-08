@@ -3,10 +3,7 @@ package Model;
 import Model.Database.PlaylistDAO;
 import Model.Database.PlaylistTrackDAO;
 import Model.Database.TrackDAO;
-import Model.Entity.ObjectMessage;
-import Model.Entity.Playlist;
-import Model.Entity.PlaylistTrack;
-import Model.Entity.User;
+import Model.Entity.*;
 
 import java.util.ArrayList;
 
@@ -35,8 +32,13 @@ public class MusicManager {
 
     public static ObjectMessage deletePlaylist(ObjectMessage om){
         PlaylistDAO playlistDAO = new PlaylistDAO();
+        PlaylistTrackDAO playlistTrackDAO = new PlaylistTrackDAO();
         Playlist playlist = (Playlist)om.getObject();
         playlistDAO.deleteById(playlist.getId());
+
+        for(Track t: playlist.getTracks()){
+            playlistTrackDAO.updateRating(t.getId());
+        }
 
         return om;
     }
@@ -52,6 +54,7 @@ public class MusicManager {
         PlaylistTrackDAO playlistTrackDAO = new PlaylistTrackDAO();
         PlaylistTrack playlistTrack = (PlaylistTrack)om.getObject();
         playlistTrackDAO.deleteById(playlistTrack.getId());
+        playlistTrackDAO.updateRating(playlistTrack.getTrack_id());
 
         return om;
     }

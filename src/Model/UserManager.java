@@ -1,7 +1,10 @@
 package Model;
 
+import Model.Database.PlaylistTrackDAO;
+import Model.Database.TrackDAO;
 import Model.Database.UserDAO;
 import Model.Entity.ObjectMessage;
+import Model.Entity.Track;
 import Model.Entity.User;
 
 import java.time.LocalDateTime;
@@ -88,6 +91,20 @@ public class UserManager {
         om.printErrors();
 
         return om;
+    }
+
+    public static void deleteUser(String name){
+        TrackDAO trackDAO = new TrackDAO();
+        PlaylistTrackDAO playlistTrackDAO = new PlaylistTrackDAO();
+        UserDAO userDAO = new UserDAO();
+
+        userDAO.deleteByName(name);
+
+        ArrayList<Track> tracks = trackDAO.findAll();
+        //actualitzem el rating de totes les cançons del sistema
+        for(Track t:tracks){
+            playlistTrackDAO.updateRating(t.getId());
+        }
     }
 
     private static boolean isEmailValid(String email) {
