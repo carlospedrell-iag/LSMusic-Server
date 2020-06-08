@@ -39,4 +39,14 @@ public class MusicManager {
 
         return om;
     }
+
+    public static ObjectMessage rateTrack(ObjectMessage om){
+        PlaylistTrackDAO playlistTrackDAO = new PlaylistTrackDAO();
+        PlaylistTrack playlistTrack = (PlaylistTrack)om.getObject();
+
+        playlistTrackDAO.update(playlistTrack);
+        playlistTrackDAO.updateRating(playlistTrack.getTrack_id());
+
+        return om;
+    }
 }

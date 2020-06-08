@@ -77,6 +77,10 @@ public class DedicatedServer extends Thread {
                         input_om = MusicManager.addPlaylistTrack(input_om);
                         oos.writeObject(input_om);
                         break;
+                    case "rate_track":
+                        input_om = MusicManager.rateTrack(input_om);
+                        oos.writeObject(input_om);
+                        break;
                 }
             }
             catch (IOException | ClassNotFoundException e){
@@ -84,8 +88,6 @@ public class DedicatedServer extends Thread {
             }
         }
     }
-
-
 
     private void setConfig(){
 

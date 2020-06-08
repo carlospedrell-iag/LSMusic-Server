@@ -82,7 +82,7 @@ public class MusicController implements ActionListener {
 
         int selected_row = musicPanel.getMusic_table().getSelectedRow();
         //nomes si l'usuari ha seleccionat
-        if(selected_row >= 0){
+        if(selected_row != -1){
             //extreiem el titol de la canço de la taula segons quina fila s'ha seleccionat
             String track_title = musicPanel.getMusic_table().getValueAt(selected_row,0).toString();
             //envia un missatge de warning per GUI
