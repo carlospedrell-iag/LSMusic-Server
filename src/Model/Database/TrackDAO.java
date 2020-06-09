@@ -40,6 +40,36 @@ public class TrackDAO {
         return tracks;
     }
 
+    public Track findById(int id){
+        PreparedStatement statement;
+        Track track;
+
+        try{
+            statement = connection.prepareStatement("SELECT * FROM Track WHERE id = ?;");
+            statement.setInt(1,id);
+            ResultSet rs = statement.executeQuery();
+
+            while(rs.next()){
+
+                track = new Track(
+                        rs.getInt("id"),
+                        rs.getString("title"),
+                        rs.getString("artist"),
+                        rs.getString("album"),
+                        rs.getString("genre"),
+                        rs.getString("path"),
+                        rs.getInt("plays"),
+                        rs.getFloat("rating")
+                );
+
+                return track;
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void create(Track track){
         PreparedStatement statement;
 

@@ -87,9 +87,7 @@ public class UserManager {
                 om.addError("Les credencials introduïdes són incorrectes.");
             }
         }
-
         om.printErrors();
-
         return om;
     }
 

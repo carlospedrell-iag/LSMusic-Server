@@ -89,6 +89,10 @@ public class DedicatedServer extends Thread {
                         input_om = MusicManager.rateTrack(input_om);
                         oos.writeObject(input_om);
                         break;
+                    case "request_file":
+                        input_om = MusicManager.getFile(input_om);
+                        oos.writeObject(input_om);
+                        break;
                 }
             }
             catch (IOException | ClassNotFoundException e){
