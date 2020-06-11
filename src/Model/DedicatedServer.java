@@ -90,10 +90,45 @@ public class DedicatedServer extends Thread {
                         oos.writeObject(input_om);
                         break;
                     case "request_file":
-                        input_om = MusicManager.getFile(input_om);
+                        //receive track
+                        Track track = (Track) input_om.getObject();
+                        System.out.println("Track request, id: " +  track.getId() + " , title: " + track.getTitle());
+                        File file = new File(track.getPath());
+
+
+                        int file_length = (int)file.length();
+                        System.out.println("File size " + file_length);
+
+                        oos.writeInt(file_length);
+                        oos.flush();
+                        //byte content[] = new byte[(int)file.length()];
+
+                        //llegim del fitxer en grups de bytes
+                        byte[] buffer = new byte[4096 * 4];
+
+                        InputStream in = new FileInputStream(file);
+                        //l'enviem al client
+                        OutputStream out = client_socket.getOutputStream();
+
+                        int count;
+                        while ((count = in.read(buffer)) > 0) {
+                            out.write(buffer, 0, count);
+                            out.flush();
+                        }
+
+
+                        out.close();
+                        in.close();
+
+
+
+                        break;
+                    case "update_playcount":
+                        input_om = MusicManager.updatePlaycount(input_om);
                         oos.writeObject(input_om);
                         break;
                 }
+                client_socket.close();
             }
             catch (IOException | ClassNotFoundException e){
                 e.printStackTrace();

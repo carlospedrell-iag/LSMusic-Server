@@ -72,23 +72,35 @@ public class MusicManager {
 
         return om;
     }
-
+    //TODO: abrir cancion desde musicpanel no sale downloading...
     public static ObjectMessage getFile(ObjectMessage om){
-        TrackDAO trackDAO = new TrackDAO();
-        Track track = trackDAO.findById((int)om.getObject());
+        Track track = (Track) om.getObject();
         File file = new File(track.getPath());
+        System.out.println("Track request, id: " +  track.getId() + " , title: " + track.getTitle());
 
         try{
             FileInputStream fs = new FileInputStream(track.getPath());
             byte content[] = new byte[(int)file.length()];
             fs.read(content,0,content.length);
             track.setFile(content);
-
             om.setObject(track);
 
         } catch (IOException e){
             e.printStackTrace();
         }
+
+        return om;
+    }
+
+    public static ObjectMessage updatePlaycount(ObjectMessage om){
+        Track user_track = (Track) om.getObject();
+
+        //afegim la reproducció al playcount
+        TrackDAO trackDAO = new TrackDAO();
+        Track db_track = trackDAO.findById(user_track.getId());
+
+        db_track.addPlay();
+        trackDAO.update(db_track);
 
         return om;
     }
