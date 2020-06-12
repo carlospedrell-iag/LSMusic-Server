@@ -1,13 +1,7 @@
 package Model;
 
-import Model.Database.DBConnector;
-import Model.Database.PlaylistDAO;
-import Model.Database.TrackDAO;
-import Model.Database.UserDAO;
 import Model.Entity.ObjectMessage;
-import Model.Entity.Playlist;
 import Model.Entity.Track;
-import Model.Entity.User;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -15,9 +9,6 @@ import com.google.gson.JsonParser;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 public class DedicatedServer extends Thread {
 
@@ -41,98 +32,108 @@ public class DedicatedServer extends Thread {
     @Override
     public void run(){
         while (running){
-            try{
-                //conecta al socket del client
-                Socket client_socket = server_socket.accept();
-                //rebem l'objecte del client
-                ObjectInputStream ois = new ObjectInputStream(client_socket.getInputStream());
-                Object input_obj = ois.readObject();
+            processClient();
+        }
+    }
 
-                ObjectMessage input_om = (ObjectMessage)input_obj;
+    private void processClient(){
 
-                ObjectOutputStream oos = new ObjectOutputStream(client_socket.getOutputStream());
-                //segons el tipus d'operacio que ens diu el Object Message, s'executa un metode diferent
-                switch (input_om.getMessage()){
-                    case "register":
-                        input_om = UserManager.registerUser(input_om);
-                        oos.writeObject(input_om);
-                        break;
-                    case "login":
-                        input_om = UserManager.loginUser(input_om);
-                        oos.writeObject(input_om);
-                        break;
-                    case "request_tracklist":
-                        input_om = MusicManager.requestTracklist(input_om);
-                        oos.writeObject(input_om);
-                        break;
-                    case "request_playlists":
-                        input_om = MusicManager.requestPlaylists(input_om);
-                        oos.writeObject(input_om);
-                        break;
-                    case "new_playlist":
-                        input_om = MusicManager.newPlaylist(input_om);
-                        oos.writeObject(input_om);
-                        break;
-                    case "delete_playlist":
-                        input_om = MusicManager.deletePlaylist(input_om);
-                        oos.writeObject(input_om);
-                        break;
-                    case "add_playlist_track":
-                        input_om = MusicManager.addPlaylistTrack(input_om);
-                        oos.writeObject(input_om);
-                        break;
-                    case "delete_playlist_track":
-                        input_om = MusicManager.deletePlaylistTrack(input_om);
-                        oos.writeObject(input_om);
-                        break;
-                    case "rate_track":
-                        input_om = MusicManager.rateTrack(input_om);
-                        oos.writeObject(input_om);
-                        break;
-                    case "request_file":
-                        //receive track
-                        Track track = (Track) input_om.getObject();
-                        System.out.println("Track request, id: " +  track.getId() + " , title: " + track.getTitle());
-                        File file = new File(track.getPath());
+        try{
+            //conecta al socket del client
+            Socket client_socket = server_socket.accept();
+            //rebem l'objecte del client
+            ObjectInputStream ois = new ObjectInputStream(client_socket.getInputStream());
+            Object input_obj = ois.readObject();
 
+            ObjectMessage input_om = (ObjectMessage)input_obj;
 
-                        int file_length = (int)file.length();
-                        System.out.println("File size " + file_length);
+            ObjectOutputStream oos = new ObjectOutputStream(client_socket.getOutputStream());
+            //segons el tipus d'operacio que ens diu el Object Message, s'executa un metode diferent
+            switch (input_om.getMessage()){
+                case "register":
+                    input_om = UserManager.registerUser(input_om);
+                    oos.writeObject(input_om);
+                    break;
+                case "login":
+                    input_om = UserManager.loginUser(input_om);
+                    oos.writeObject(input_om);
+                    break;
+                case "request_tracklist":
+                    input_om = MusicManager.requestTracklist(input_om);
+                    oos.writeObject(input_om);
+                    break;
+                case "request_playlists":
+                    input_om = MusicManager.requestPlaylists(input_om);
+                    oos.writeObject(input_om);
+                    break;
+                case "new_playlist":
+                    input_om = MusicManager.newPlaylist(input_om);
+                    oos.writeObject(input_om);
+                    break;
+                case "delete_playlist":
+                    input_om = MusicManager.deletePlaylist(input_om);
+                    oos.writeObject(input_om);
+                    break;
+                case "add_playlist_track":
+                    input_om = MusicManager.addPlaylistTrack(input_om);
+                    oos.writeObject(input_om);
+                    break;
+                case "delete_playlist_track":
+                    input_om = MusicManager.deletePlaylistTrack(input_om);
+                    oos.writeObject(input_om);
+                    break;
+                case "rate_track":
+                    input_om = MusicManager.rateTrack(input_om);
+                    oos.writeObject(input_om);
+                    break;
+                case "request_file":
+                    //receive track
+                    Track track = (Track) input_om.getObject();
+                    String title = track.getTitle();
+                    System.out.println("Track request, id: " +  track.getId() + " , title: " + title);
+                    File file = new File(track.getPath());
 
-                        oos.writeInt(file_length);
-                        oos.flush();
-                        //byte content[] = new byte[(int)file.length()];
+                    int file_length = (int)file.length();
+                    System.out.println("File size " + file_length);
 
-                        //llegim del fitxer en grups de bytes
-                        byte[] buffer = new byte[4096 * 4];
+                    oos.writeInt(file_length);
+                    oos.flush();
 
-                        InputStream in = new FileInputStream(file);
-                        //l'enviem al client
-                        OutputStream out = client_socket.getOutputStream();
+                    //llegim del fitxer en grups de bytes
+                    byte[] buffer = new byte[4096 * 4];
 
-                        int count;
-                        while ((count = in.read(buffer)) > 0) {
-                            out.write(buffer, 0, count);
-                            out.flush();
-                        }
+                    InputStream in = new FileInputStream(file);
+                    //l'enviem al client
+                    OutputStream out = client_socket.getOutputStream();
 
+                    int count;
+                    int current = 0;
+                    while ((count = in.read(buffer)) > 0) {
+                        out.write(buffer, 0, count);
+                        out.flush();
+                        current+= count;
+                        System.out.println("Sending track: " + title + " to client. " + current + "/" + file_length);
+                    }
 
-                        out.close();
-                        in.close();
+                    System.out.println("Track sent.");
 
+                    out.close();
+                    in.close();
 
+                    break;
+                case "update_playcount":
+                    input_om = MusicManager.updatePlaycount(input_om);
+                    oos.writeObject(input_om);
+                    break;
+                case "request_following":
+                    input_om = UserManager.requestUsers(input_om);
+                    oos.writeObject(input_om);
 
-                        break;
-                    case "update_playcount":
-                        input_om = MusicManager.updatePlaycount(input_om);
-                        oos.writeObject(input_om);
-                        break;
-                }
-                client_socket.close();
             }
-            catch (IOException | ClassNotFoundException e){
-                e.printStackTrace();
-            }
+            client_socket.close();
+        }
+        catch (IOException | ClassNotFoundException e){
+            e.printStackTrace();
         }
     }
 
@@ -151,6 +152,4 @@ public class DedicatedServer extends Thread {
             e.printStackTrace();
         }
     }
-
-
 }

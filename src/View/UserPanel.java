@@ -17,7 +17,7 @@ public class UserPanel{
 
     private JMenuItem deleteUser;
 
-    private String[] columnNames = {"Username", "Created At", "Last Access"};
+    private String[] columnNames = {"Username", "Created At", "Last Access", "Playlists", "Tracks"};
 
     public  UserPanel(){
         user_table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -49,9 +49,9 @@ public class UserPanel{
             String created_at = user.getCreated_at().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             if(user.getLast_access() != null){
                 String last_access = user.getLast_access().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                model.addRow(new Object[]{user.getName(),created_at,last_access});
+                model.addRow(new Object[]{user.getName(),created_at,last_access,user.getPlaylist_count(),user.getTrack_count()});
             } else {
-                model.addRow(new Object[]{user.getName(),created_at,"NULL"});
+                model.addRow(new Object[]{user.getName(),created_at,"NULL","0","0"});
             }
         }
 

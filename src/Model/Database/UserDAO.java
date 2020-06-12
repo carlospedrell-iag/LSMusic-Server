@@ -36,6 +36,9 @@ public class UserDAO {
                         rs.getTimestamp("created_at").toLocalDateTime(),
                         last_access
                 );
+
+                user.setPlaylist_count(findPlaylistCount(user));
+                user.setTrack_count(findTrackCount(user));
                 users.add(user);
             }
         } catch (SQLException e){
@@ -148,5 +151,42 @@ public class UserDAO {
         }
 
         System.out.println("Usuari " + name + " eliminat de la db.");
+    }
+
+    private int findPlaylistCount(User user){
+        PreparedStatement statement;
+
+        try{
+            statement = connection.prepareStatement("SELECT COUNT(id) FROM Playlist WHERE id_user = ?;");
+            statement.setInt(1,user.getId());
+            ResultSet rs = statement.executeQuery();
+            rs.next();
+
+            return rs.getInt("COUNT(id)");
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    private int findTrackCount(User user){
+        PreparedStatement statement;
+
+        try{
+            statement = connection.prepareStatement("SELECT COUNT(PT.id_playlist_track) FROM Playlist_Track AS PT " +
+                    "JOIN Playlist P ON PT.id_playlist = P.id JOIN User U ON P.id_user = U.id WHERE U.id = ?;");
+            statement.setInt(1,user.getId());
+            ResultSet rs = statement.executeQuery();
+            rs.next();
+
+            return rs.getInt("COUNT(PT.id_playlist_track)");
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return 0;
     }
 }

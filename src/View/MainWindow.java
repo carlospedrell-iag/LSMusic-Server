@@ -12,7 +12,7 @@ public class MainWindow extends JFrame {
 
     public MainWindow(){
         //settings principals
-        setSize(600,540);
+        setSize(760,540);
         setTitle("LaSalleMusic Server");
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

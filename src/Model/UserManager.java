@@ -105,6 +105,13 @@ public class UserManager {
         }
     }
 
+    public static ObjectMessage requestUsers(ObjectMessage om){
+        System.out.println("Users requested from client");
+        UserDAO userDAO = new UserDAO();
+        om.setObject(userDAO.findAll());
+        return om;
+    }
+
     private static boolean isEmailValid(String email) {
         //expressió regular que ens diu si el mail es valid
         String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
