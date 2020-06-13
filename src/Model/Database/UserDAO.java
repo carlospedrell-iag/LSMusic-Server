@@ -56,24 +56,27 @@ public class UserDAO {
             statement = connection.prepareStatement("SELECT * FROM User WHERE name = ?;");
             statement.setString(1,name);
             ResultSet rs = statement.executeQuery();
-            rs.next();
 
-            Timestamp last_access_ts = rs.getTimestamp("last_access");
-            LocalDateTime last_access = null;
-            if(last_access_ts != null){
-                last_access = last_access_ts.toLocalDateTime();
+
+            if(rs.next() == true){
+                Timestamp last_access_ts = rs.getTimestamp("last_access");
+                LocalDateTime last_access = null;
+                if(last_access_ts != null){
+                    last_access = last_access_ts.toLocalDateTime();
+                }
+
+                user = new User(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getTimestamp("created_at").toLocalDateTime(),
+                        last_access
+                );
+
+                return user;
             }
 
-            user = new User(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getString("email"),
-                    rs.getString("password"),
-                    rs.getTimestamp("created_at").toLocalDateTime(),
-                    last_access
-            );
-
-            return user;
 
         } catch (SQLException e){
             e.printStackTrace();
@@ -141,9 +144,7 @@ public class UserDAO {
 
         try{
             statement = connection.prepareStatement("DELETE FROM User WHERE name = ?");
-
             statement.setString(1,name);
-
             statement.executeUpdate();
 
         } catch (SQLException e){
@@ -151,6 +152,56 @@ public class UserDAO {
         }
 
         System.out.println("Usuari " + name + " eliminat de la db.");
+    }
+
+    public ArrayList<User> findFollowing(User user){
+        PreparedStatement statement;
+        ArrayList<User> users = new ArrayList<>();
+        System.out.println("Following Request");
+
+        try{
+            statement = connection.prepareStatement("SELECT * FROM Follows AS F JOIN User U ON F.id_followed = U.id WHERE F.id_follower = ?;");
+            statement.setInt(1,user.getId());
+            ResultSet rs = statement.executeQuery();
+
+            while(rs.next()){
+                Timestamp last_access_ts = rs.getTimestamp("last_access");
+                LocalDateTime last_access = null;
+                if(last_access_ts != null){
+                    last_access = last_access_ts.toLocalDateTime();
+                }
+                User u = new User(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getTimestamp("created_at").toLocalDateTime(),
+                        last_access
+                );
+                users.add(u);
+            }
+            return users;
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public void followUser(User user, User followed){
+        PreparedStatement statement;
+
+        try{
+            statement = connection.prepareStatement("INSERT INTO Follows VALUES(?,?)");
+            statement.setInt(1,user.getId());
+            statement.setInt(2,followed.getId());
+            statement.executeUpdate();
+            System.out.println("User " + user.getName() + " is now following " + followed.getName());
+
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
     }
 
     private int findPlaylistCount(User user){

@@ -2,6 +2,7 @@ package Model;
 
 import Model.Entity.ObjectMessage;
 import Model.Entity.Track;
+import Model.Entity.User;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -126,8 +127,17 @@ public class DedicatedServer extends Thread {
                     oos.writeObject(input_om);
                     break;
                 case "request_following":
-                    input_om = UserManager.requestUsers(input_om);
+                    input_om = UserManager.requestFollowing(input_om);
                     oos.writeObject(input_om);
+                    break;
+                case"request_user":
+                    input_om = UserManager.requestUser(input_om);
+                    oos.writeObject(input_om);
+                    break;
+                case "follow_user":
+                    input_om = UserManager.followUser(input_om);
+                    oos.writeObject(input_om);
+                    break;
 
             }
             client_socket.close();

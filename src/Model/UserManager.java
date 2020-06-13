@@ -105,11 +105,30 @@ public class UserManager {
         }
     }
 
-    public static ObjectMessage requestUsers(ObjectMessage om){
+    public static ObjectMessage requestFollowing(ObjectMessage om){
         System.out.println("Users requested from client");
         UserDAO userDAO = new UserDAO();
-        om.setObject(userDAO.findAll());
+        User user = (User)om.getObject();
+        om.setObject(userDAO.findFollowing(user));
+
         return om;
+    }
+
+    public static ObjectMessage requestUser(ObjectMessage om){
+        UserDAO userDAO = new UserDAO();
+        User user = userDAO.findByName((String)om.getObject());
+        om.setObject(user);
+        return om;
+    }
+
+    public static ObjectMessage followUser(ObjectMessage om){
+        User user = (User)om.getObject();
+        String followed = om.getExtra();
+        UserDAO userDAO = new UserDAO();
+        User followed_user = userDAO.findByName(followed);
+        userDAO.followUser(user,followed_user);
+        return om;
+
     }
 
     private static boolean isEmailValid(String email) {
