@@ -2,13 +2,23 @@ import Controller.MusicController;
 import Controller.UserController;
 import Model.DedicatedServer;
 import View.MainWindow;
+import com.formdev.flatlaf.FlatLightLaf;
 
 
+import javax.swing.*;
 import java.io.IOException;
 
 public class Main {
 
     public static void main(String[] args){
+
+        //instala el flat theme per Swing
+        FlatLightLaf.install();
+        try{
+            UIManager.setLookAndFeel(new FlatLightLaf());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         DedicatedServer server = new DedicatedServer();
 
@@ -25,6 +35,5 @@ public class Main {
 
         mainWindow.getUserPanel().setUpController(userController);
         mainWindow.getMusicPanel().setUpController(musicController);
-
     }
 }

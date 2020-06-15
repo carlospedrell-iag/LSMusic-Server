@@ -134,4 +134,33 @@ public class TrackDAO {
         }
         System.out.println("Track id:" + id + " eliminat de la db.");
     }
+
+    public ArrayList<Track> findTopTen(){
+        ArrayList<Track> tracks = new ArrayList<>();
+        PreparedStatement statement;
+
+        try{
+            statement = connection.prepareStatement("SELECT * FROM Track ORDER BY plays DESC LIMIT 10;");
+            ResultSet rs = statement.executeQuery();
+
+            while(rs.next()){
+
+                Track track = new Track(
+                        rs.getInt("id"),
+                        rs.getString("title"),
+                        rs.getString("artist"),
+                        rs.getString("album"),
+                        rs.getString("genre"),
+                        rs.getString("path"),
+                        rs.getInt("plays"),
+                        rs.getFloat("rating")
+                );
+                tracks.add(track);
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return tracks;
+    }
 }

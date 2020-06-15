@@ -204,6 +204,21 @@ public class UserDAO {
         }
     }
 
+    public void unfollowUser(User user, User followed){
+        PreparedStatement statement;
+
+        try{
+            statement = connection.prepareStatement("DELETE FROM Follows WHERE id_follower = ? AND id_followed = ?");
+            statement.setInt(1,user.getId());
+            statement.setInt(2,followed.getId());
+            statement.executeUpdate();
+            System.out.println("User " + user.getName() + " unfollowed " + followed.getName());
+
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+
     private int findPlaylistCount(User user){
         PreparedStatement statement;
 

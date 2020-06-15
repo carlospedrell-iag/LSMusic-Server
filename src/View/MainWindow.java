@@ -1,5 +1,7 @@
 package View;
 
+import com.formdev.flatlaf.FlatLightLaf;
+
 import javax.swing.*;
 import java.io.PrintStream;
 
@@ -8,11 +10,12 @@ public class MainWindow extends JFrame {
     private JPanel main_panel;
     private UserPanel userPanel;
     private MusicPanel musicPanel;
+    private StatsPanel statsPanel;
     private AddTrackDialog addTrackDialog;
 
     public MainWindow(){
         //settings principals
-        setSize(760,540);
+        setSize(940,540);
         setTitle("LaSalleMusic Server");
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -20,9 +23,12 @@ public class MainWindow extends JFrame {
 
         this.userPanel = new UserPanel();
         this.musicPanel = new MusicPanel();
+        this.statsPanel = new StatsPanel();
+
         //initzialitzem tots els panels
         tabbedPane.add("Manage Users",userPanel.getMain_panel());
         tabbedPane.add("Manage Music",musicPanel.getMain_panel());
+        tabbedPane.add("Top Listened Tracks",statsPanel);
         setContentPane(main_panel);
     }
 

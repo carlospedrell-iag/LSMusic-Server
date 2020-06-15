@@ -35,6 +35,7 @@ public class MusicController implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()){
             case "show_form":
+                //formulari per afegir un track
                 file_path = "";
                 mainWindow.showAddTrackDialog();
                 mainWindow.getAddTrackDialog().setUpController(this);
@@ -58,7 +59,7 @@ public class MusicController implements ActionListener {
         AddTrackDialog addTrackDialog = mainWindow.getAddTrackDialog();
         Boolean anyEmpty = false;
         String[] form = addTrackDialog.getForm();
-
+        //comprovem que no hi hagi cap camp en blanc
         for (String s: form){
             if (s.isBlank()){ anyEmpty = true;}
         }
@@ -79,13 +80,12 @@ public class MusicController implements ActionListener {
 
     private void removeSelectedTrack(){
         //elimina la canço de la DB de la fila seleccionada per l'usuari
-
         int selected_row = musicPanel.getMusic_table().getSelectedRow();
         //nomes si l'usuari ha seleccionat
         if(selected_row != -1){
             //extreiem el titol de la canço de la taula segons quina fila s'ha seleccionat
             String track_title = musicPanel.getMusic_table().getValueAt(selected_row,0).toString();
-            //envia un missatge de warning per GUI
+            //envia un missatge de warning per GUI preguntant si estem segurs
             int dialogResult = mainWindow.showConfirmMessage("Eliminar track " + track_title + "?");
 
             if(dialogResult == JOptionPane.YES_OPTION){
@@ -130,3 +130,4 @@ public class MusicController implements ActionListener {
         }
     }
 }
+//TODO ARREGALR EL BOTON DE ADD TRACK EN DIALOG

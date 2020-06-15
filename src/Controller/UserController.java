@@ -63,7 +63,6 @@ public class UserController implements ActionListener {
             if(dialogResult == JOptionPane.YES_OPTION){
                 //eliminem user de la db per nom i actualitzem la taula
                 UserManager.deleteUser(user_name);
-
                 updateTable();
 
                 mainWindow.showMessage("Usuari " + user_name + " eliminat de la base de dades");

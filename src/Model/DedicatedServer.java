@@ -100,11 +100,10 @@ public class DedicatedServer extends Thread {
                     oos.writeInt(file_length);
                     oos.flush();
 
-                    //llegim del fitxer en grups de bytes
+                    //tamany del buffer 16KB
                     byte[] buffer = new byte[4096 * 4];
-
+                    //input llegeix del fitxer en el servidor, output escriu al client
                     InputStream in = new FileInputStream(file);
-                    //l'enviem al client
                     OutputStream out = client_socket.getOutputStream();
 
                     int count;
@@ -136,6 +135,10 @@ public class DedicatedServer extends Thread {
                     break;
                 case "follow_user":
                     input_om = UserManager.followUser(input_om);
+                    oos.writeObject(input_om);
+                    break;
+                case "unfollow_user":
+                    input_om = UserManager.unfollowUser(input_om);
                     oos.writeObject(input_om);
                     break;
 

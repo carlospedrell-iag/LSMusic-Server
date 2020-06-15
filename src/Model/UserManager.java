@@ -128,7 +128,15 @@ public class UserManager {
         User followed_user = userDAO.findByName(followed);
         userDAO.followUser(user,followed_user);
         return om;
+    }
 
+    public static ObjectMessage unfollowUser(ObjectMessage om){
+        User user = (User)om.getObject();
+        String followed = om.getExtra();
+        UserDAO userDAO = new UserDAO();
+        User followed_user = userDAO.findByName(followed);
+        userDAO.unfollowUser(user,followed_user);
+        return om;
     }
 
     private static boolean isEmailValid(String email) {
