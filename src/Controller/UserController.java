@@ -26,9 +26,6 @@ public class UserController implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         switch(e.getActionCommand()){
-            case "refresh":
-                updateTable();
-                break;
 
             case "delete_user":
                 removeSelectedUser();
@@ -36,7 +33,7 @@ public class UserController implements ActionListener {
         }
     }
 
-    private void updateTable(){
+    public void updateTable(){
         try{
             //recull info d'user de la DB i la envia a la vista per refrescar la taula
             UserDAO userDAO = new UserDAO();

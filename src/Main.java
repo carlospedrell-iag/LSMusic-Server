@@ -1,3 +1,4 @@
+import Controller.MainController;
 import Controller.MusicController;
 import Controller.UserController;
 import Model.DedicatedServer;
@@ -33,7 +34,12 @@ public class Main {
         UserController userController = new UserController(mainWindow);
         MusicController musicController = new MusicController(mainWindow);
 
+        MainController mainController = new MainController(mainWindow, userController);
+
         mainWindow.getUserPanel().setUpController(userController);
         mainWindow.getMusicPanel().setUpController(musicController);
+
+        mainWindow.setUpController(mainController);
+
     }
 }

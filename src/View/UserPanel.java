@@ -10,10 +10,8 @@ import java.util.ArrayList;
 
 public class UserPanel{
     private JPanel main_panel;
-    private JButton refresh_button;
     private JTable user_table;
     private JPanel container;
-    private JToolBar toolbar;
 
     private JMenuItem deleteUser;
 
@@ -22,7 +20,6 @@ public class UserPanel{
     public  UserPanel(){
         user_table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         user_table.getTableHeader().setReorderingAllowed(false);
-        refresh_button.setActionCommand("refresh");
 
         //pop-up menu quan fem right click per eliminar un user
         JPopupMenu popupMenu = new JPopupMenu();
@@ -59,7 +56,6 @@ public class UserPanel{
     }
 
     public void setUpController(UserController controller){
-        refresh_button.addActionListener(controller);
         deleteUser.addActionListener(controller);
     }
 

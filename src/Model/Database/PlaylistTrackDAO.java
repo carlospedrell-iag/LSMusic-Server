@@ -81,7 +81,7 @@ public class PlaylistTrackDAO {
                     "     SELECT PT.rating FROM Playlist_Track AS PT\n" +
                     "JOIN Playlist P ON PT.id_playlist = P.id\n" +
                     "JOIN User U ON P.id_user = U.id\n" +
-                    "WHERE PT.rating <> -1 AND PT.id_track = ?\n" +
+                    "WHERE PT.rating <> 0 AND PT.id_track = ?\n" +
                     "GROUP BY U.id\n" +
                     "         )x;");
 
@@ -91,9 +91,9 @@ public class PlaylistTrackDAO {
             float avg_rating = rs.getFloat("AVG(x.rating)");
 
             PreparedStatement statement1;
-            //si no hi ha cap rating, el avg_rating es -1 (nul)
+            //si no hi ha cap rating, el avg_rating es 0 (nul)
             if(!isRated(track_id)){
-                avg_rating = -1;
+                avg_rating = 0;
             }
             statement1 = connection.prepareStatement("UPDATE Track SET rating = ? WHERE id = ?;");
 

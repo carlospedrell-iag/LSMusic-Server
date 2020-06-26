@@ -75,7 +75,7 @@ public class DedicatedServer extends Thread {
                     input_om = MusicManager.deletePlaylist(input_om);
                     oos.writeObject(input_om);
                     break;
-                case "add_playlist_track":
+                    case "add_playlist_track":
                     input_om = MusicManager.addPlaylistTrack(input_om);
                     oos.writeObject(input_om);
                     break;
